@@ -1,6 +1,10 @@
 # “Automated checking of scientific references using Large Language Models”
+
 ![grafik](https://github.com/TRotheSantos/refCheck/assets/124930266/ffea4dc7-f66b-44f3-8c1f-d16485f5bdf8)
 
+
+
+## Process (only in german so far)
 ![grafik](https://github.com/TRotheSantos/refCheck/assets/124930266/cbb4cfb6-c33a-405f-8075-c495fb8181f9)
 
 
