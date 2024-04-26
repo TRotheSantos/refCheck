@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
+    <meta name="description" content="{% block description %}{% if description %}{{ description }}{% else %}RefCheck is a tool to simplify and automate the Process of checking citations in scientific papers{% endif %}{% endblock %}"/>
+    <link rel="stylesheet" href="{% static 'css/Styles.css' %}">
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,750,800">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700,750,800">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:400,500,700,750,800">
+    <link rel="stylesheet" href="https://fonts.google.com/icons?selected=Material+Symbols+Rounded:arrow_back:FILL@1;wght@300;GRAD@200;opsz@24&icon.query=back&icon.style=Rounded">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    {% block additional_head %}{% endblock %}
+
+    <title>RefCheck | {% block site_title %}{{ site_title }}{% endblock %}</title>
+</head>
+<body>
+    {% block body %}
+    {% endblock %}
+</body>
+<script src="{% static 'js/scripts.js' %}"></script>
+</html>

@@ -1,0 +1,190 @@
+{% extends 'base/standard-site-base.html' %}
+{% load static %}
+
+{% block description %}Dashboard and recently checked papers{% endblock %}
+{% block site_title %}Dashboard{% endblock %}
+
+{% block sticky-header %}
+<header class="shrinking-header">
+    <div class="caption full-width">
+        <h1>Welcome to <span class="thin-underline">RefCheck</span></h1>
+        {% if subtitle %}<p class="subtitle">{{ subtitle }}</p>{% endif %}
+    </div>
+    <button class="checkDocument-button" id="checkDocumentButton" type="button">
+        <i class="material-symbols-rounded">task_alt</i>
+        Check Document
+    </button>
+    <div class="popup-form" id="checkDocumentForm" {% if form.errors %}style="display: flex;"{% endif %}>
+        <button class="closeButton" id="closeButton">
+            <i class="material-symbols-rounded">close</i>
+        </button>
+        <form method="POST" enctype="multipart/form-data" id="paper-form" onsubmit="loadingPage()">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% with label="Paper Title" input_id=form.title.id_for_label input=form.title required=True max_input_length=150 errors=form.title.errors %}
+                {% include 'base/form-group.html' %}
+            {% endwith %}
+            {% with label="Author" input_id=form.author.id_for_label input=form.author max_input_length=150 info_box_text="optional" %}
+                {% include 'base/form-group.html' %}
+            {% endwith %}
+            {% with label="Citation Style" input_id=form.citation_style.id_for_label input=form.citation_style required=True max_input_length=150 errors=form.citation_style.errors %}
+                {% include 'base/form-group.html' %}
+            {% endwith %}
+            {% with label="Start Bibliography" input_id=form.start_bibliography.id_for_label input=form.start_bibliography required=True max_input_length=150 errors=form.start_bibliography.errors %}
+                {% include 'base/form-group.html' %}
+            {% endwith %}
+            {% with label="End Bibliography" input_id=form.end_bibliography.id_for_label input=form.end_bibliography required=True max_input_length=150 errors=form.end_bibliography.errors %}
+                {% include 'base/form-group.html' %}
+            {% endwith %}
+            <input id=fileInput type="file" name="file" required>
+            <button type="submit">Check</button>
+        </form>
+    </div>
+    <div class="loading-screen" id="loading-screen" style="display: none;">
+        <div class="loading-overlay"></div>
+        <div class="loading-spinner">
+            <img src="{% static 'images/loading-spinner.gif' %}" alt="loading spinner">
+        </div>
+    </div>
+    <script>
+        document.getElementById('checkDocumentButton').addEventListener('click', function () {
+            if (document.getElementById('id_title').value == '') {
+                document.getElementById('fileInput').click();
+            } else {
+                document.getElementById('checkDocumentForm').style.display = 'flex';
+            }
+        });
+
+        // to detect if user has manually entered a title
+        var titleBuffer
+        document.getElementById('fileInput').addEventListener('change', function () {
+            document.getElementById("checkDocumentForm").style.display = "flex";
+            var selectedFile = this.files[0];
+            var titleInput = document.getElementById('id_title');
+
+            // change title only if it was empty or if it was the auto set title
+            if (titleInput && (titleInput.value == '' || titleInput.value == titleBuffer)) {
+                var fileNameWithoutExtension = selectedFile.name.split('.').slice(0, -1).join('.');
+                titleInput.value = fileNameWithoutExtension;
+                titleBuffer = fileNameWithoutExtension;
+            }
+        });
+
+        document.getElementById("closeButton").addEventListener('click', function () {
+            document.getElementById("checkDocumentForm").style.display = "none";
+        });
+
+        var loadingPage = function () {
+            document.getElementById('loading-screen').style.display = 'flex';
+            return true;
+        }
+    </script>
+</header>
+{% include 'base/text-logo.html' %}
+<hr class="header-separator">
+<div class="section-heading">
+    <h2>Recent Checks</h2>
+    <p class="subtitle">{{ papers|length }} Document{{ papers|length|pluralize:"s" }}</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<ul>
+    {% for paper in papers %}
+        <li class="list-item" onclick="location.href='{% url 'paper' paper.id %}';" id="{{paper.id}}">
+            <div class="list-element-left">
+                <i class="material-symbols-rounded">description</i>
+                <div class="list-element-meta">
+                    <p>
+                       {{ paper.title }}
+                    </p>
+                    {% if paper.type %}
+                    <p class="list-element-meta-sub">
+                       {{ paper.type }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="list-element-progress">
+                <div>
+                    {{ paper.get_checks_with_user_score_count }} / {{ paper.get_checks_with_score_count }} / {{ paper.checks.count }}
+                </div>
+                <div class="progress">
+                    <div class="progress-bar1" role="progressbar" style="width: {{ paper.get_checks_with_user_score_count_percentage }}%" aria-valuenow="{{ paper.get_checks_with_user_score_count_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar2" role="progressbar" style="width: {{ paper.get_checks_with_score_count_percentage }}%" aria-valuenow="{{ paper.get_checks_with_score_count_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="info-box-button">
+                    User-verified checks / Auto-verified checks / Total checks
+                </div>
+            </div>
+            <div class="list-element-right">
+                <a href="{% url 'paper' paper.id %}" class="list-element-button">
+                    <button id="detailsButton" type="button">
+                        <i class="material-symbols-rounded">checklist</i>
+                        Checks
+                    </button>
+                    <div class="info-box-button">
+                        View Check Results
+                    </div>
+                </a>
+                <a href="{% url 'missing_sources' paper.id %}" class="list-element-button">
+                    <button id="sourcesButton" type="button" >
+                        <i class="material-symbols-rounded">upload</i>
+                        Add Sources
+                    </button>
+                    <div class="info-box-button">
+                        Upload missing sources
+                    </div>
+                </a>
+            </div>
+        </li>
+        <hr>
+    {% endfor %}
+</ul>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var progressBars = document.querySelectorAll(".list-element-progress");
+
+        progressBars.forEach(function(progressBar) {
+            var hoverText = progressBar.querySelector(".info-box-button");
+
+            progressBar.addEventListener("mouseenter", function() {
+                var rect = progressBar.getBoundingClientRect();
+                var top = rect.top + progressBar.offsetHeight + 5;
+                var left = rect.left + (progressBar.offsetWidth - hoverText.offsetWidth) / 2;
+
+                hoverText.style.top = top + "px";
+                hoverText.style.left = left + "px";
+                hoverText.style.visibility = "visible";
+            });
+
+            progressBar.addEventListener("mouseleave", function() {
+                hoverText.style.visibility = "hidden";
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var buttons = document.querySelectorAll(".list-element-button");
+
+        buttons.forEach(function(button) {
+            var hoverText = button.querySelector(".info-box-button");
+
+            button.addEventListener("mouseenter", function() {
+                var rect = button.getBoundingClientRect();
+                var top = rect.top + button.offsetHeight + 5;
+                var left = rect.left + (button.offsetWidth - hoverText.offsetWidth) / 2;
+
+                hoverText.style.top = top + "px";
+                hoverText.style.left = left + "px";
+                hoverText.style.visibility = "visible";
+
+            });
+
+            button.addEventListener("mouseleave", function() {
+                hoverText.style.visibility = "hidden";
+            });
+        });
+    });
+</script>
+{% endblock %}

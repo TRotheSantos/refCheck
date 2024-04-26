@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+
+{% block body %}
+{% include 'base/sidebar.html' %}
+<div class="body-content">
+    {% block header %}
+    <div class="sticky-header">
+        {% block sticky-header %}
+        <header>
+            <div class="caption">
+                <h1>{{ title }}</h1>
+                {% if subtitle %}<p class="subtitle">{{ subtitle }}</p>{% endif %}
+            </div>
+            <div class="caption-addition">
+                {% block caption-addition %}
+                {% endblock %}
+            </div>
+        </header>
+        <hr>
+        {% endblock %}
+    </div>
+    {% endblock %}
+    <!-- Content-->
+    <div class="content">
+        {% block content %}
+        {{ page_content|safe}}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

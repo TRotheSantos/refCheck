@@ -1,0 +1,44 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block body %}
+{% if user.is_authenticated %}
+{% with backlink=request.META.HTTP_REFERER %}
+{% include 'base/sidebar.html' %}
+{% endwith %}
+<div class="exclude-sidebar">
+    {% endif %}
+
+    {% include 'base/text-logo.html' %}
+    <div class="splitscreen-form-body">
+        <div class="splitscreen-form-intro">
+            {% block form-intro %}
+            <img src="{% static 'images/decorative-image.png' %}" alt="Illustration of a person working on a laptop">
+            <h1>RefCheck: The Easy Way to Check References</h1>
+            <hr class="dash dark-color"/>
+            <p>Automated reference revision</p>
+            {% endblock %}
+        </div>
+        <div class="splitscreen-form-section">
+            <div class="splitscreen-form">
+                <div class="caption">
+                    <h2>{% block form_title %}{% endblock %}</h2>
+                    {% block caption-addition %}
+                    {% if subtitle %}<p class="subtitle">{{ subtitle }}</p>{% endif %}
+                    {% endblock %}
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% block form %}
+                    {{ form.as_p }}
+                    <button type=submit>{% block form_button_content %}Send{% endblock %}</button>
+                    {% endblock %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base/splitscreen-form.html' %}
+{% load static %}
+
+{% block site_title %}Sign-up{% endblock %}
+{% block description %}Sign up for RefCheck{% endblock %}
+{% block form_title %}Sign Up{% endblock %}
+
+{% block form-intro %}
+<img src="{% static 'images/signup-image.jpg' %}" alt="Illustration of a screen with multiple layers and stats">
+<h1>Join RefCheck now to simplify your revision process.</h1>
+<hr class="dash dark-color"/>
+<p>The opensource AI assistant that frees you from unnecessary manual work.</p>
+{% endblock %}
+
+{% block form %}
+{{ form.non_field_errors }}
+
+{% url 'login' as login_url %}
+{% with label="Username" input_id=form.username.id_for_label input=form.username info_box_text=form.username.help_text alternative_link=login_url alternative_text="Already have an account? &rarr;" errors=form.username.errors %}
+{% include 'base/form-group.html' %}
+{% endwith %}
+
+<!--{% with label="Email" input_id=form.email.id_for_label input=form.email required=True max_input_length=150 help_text=form.email.help_text errors=form.email.errors %}-->
+<!--{% include 'base/form-group.html' %}-->
+<!--{% endwith %}-->
+
+{% with label="Password" input_id=form.password1.id_for_label input=form.password1 info_box_text=form.password1.help_text errors=form.password1.errors %}
+{% include 'base/form-group.html' %}
+{% endwith %}
+
+{% with label="Confirm Password" input_id=form.password2.id_for_label input=form.password2 help_text=form.password2.help_text errors=form.password2.errors %}
+{% include 'base/form-group.html' %}
+{% endwith %}
+<div class="inline-buttons">
+    <button type=submit>Register</button>
+    or
+    <button class="login-with-google">Login with Google?</button>
+</div>
+{% endblock %}

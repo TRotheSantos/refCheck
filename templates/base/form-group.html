@@ -1,0 +1,26 @@
+<div class="form-group">
+    {% if label %}
+    <label for="{{ input_id }}" {% if info_box_text %}info-box-data="{{ info_box_text }}" {% endif %}">{{ label }}</label>
+    {% endif %}
+
+    {% if input %}
+    {{ input }}
+    {% else %}
+    <input type="text" placeholder="{{ placeholder }}" name="{{ input_name }}" autofocus
+           autocomplete="{{ input_name }}" {% if max_input_length %}maxlength="{{ max_input_length }}" {% endif %}
+           {% if required %}required{% endif %} id="{{ input_id }}">
+    {% endif %}
+
+    {% if info_box_text %}
+    <div class="info-box">{{ info_box_text }}</div>
+    {% endif %}
+
+    {% if alternative_link %}
+    <a href="{{ alternative_link }}">{{ alternative_text }}</a>
+    {% endif %}
+
+    {% if help_text %}
+    <p class="form-input-help">{{ help_text }}</p>
+    {% endif %}
+    {{ errors }}
+</div>

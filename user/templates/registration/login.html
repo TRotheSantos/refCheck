@@ -1,0 +1,21 @@
+{% extends 'base/splitscreen-form.html' %}
+
+{% block site_title %}Login{% endblock %}
+{% block description %}Login to RefCheck{% endblock %}
+{% block form_title %}Log In{% endblock %}
+
+{% block form %}
+{{ form.non_field_errors }}
+
+{% url 'sign_up' as sign_up_url %}
+{% with label="Username" input_id=form.username.id_for_label input_name=form.username.name required=True placeholder="example@gmail.com" max_input_length=150 alternative_link=sign_up_url alternative_text="Sign up &rarr;" errors=form.username.errors %}
+{% include 'base/form-group.html' %}
+{% endwith %}
+<br/>
+{% url 'password_reset' as password_reset_url %}
+{% with label="Password" input_id=form.password.id_for_label input=form.password placeholder="••••••••" alternative_link=password_reset_url alternative_text="Forgot your password?" errors=form.password.errors %}
+{% include 'base/form-group.html' %}
+{% endwith %}
+<button type=submit>Log in</button>
+<a href="#">Login with institution?</a>
+{% endblock %}

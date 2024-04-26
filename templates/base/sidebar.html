@@ -1,0 +1,32 @@
+<nav class="sidebar">
+    <a href="{{backlink}}" class="{% if not backlink %}hidden{% endif %}"><i
+            class="material-symbols-rounded">arrow_back</i></a>
+    <hr class="{% if not backlink %}hidden{% endif %} fill-color">
+    {% url 'home' as home_url %}
+    {% url 'dashboard' as dashboard_url%}
+    {% url 'test' as test_url %}
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">
+        <i class="material-symbols-rounded {% if request.path == test_url or request.path == dashboard_url or request.path == home_url %}current-location{% endif %}"
+            style="fill: none;">dashboard</i></a>
+    {% else %}
+    <a href="{% url 'landing_page' %}">
+        <i class="material-symbols-rounded"
+            style="fill: none;">dashboard</i></a>
+    {% endif %}
+    {% if request.session.last_visited_check_paper %}
+    {% url 'paper' request.session.last_visited_check_paper as paper_url %}
+    <a href="{{ paper_url }}"><i
+            class="material-symbols-rounded {% if request.path == paper_url %}current-location{% endif %}">task</i></a>
+    {% endif %}
+    {% url 'index' as index_url %}
+    {% url 'info' as info_url %}
+    <a href="{% url 'info' %}"><i
+            class="material-symbols-rounded {% if request.path == index_url or request.path == info_url %}current-location{% endif %}">info</i></a>
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'profile' %}"><i class="material-symbols-rounded">account_circle</i></a>
+    <a href="{% url 'logout' %}"><i class="material-symbols-rounded rotated">logout</i></a>
+    {% else %}
+    <a href="{% url 'login' %}"><i class="material-symbols-rounded">login</i></a>
+    {% endif %}
+</nav>

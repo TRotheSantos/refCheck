@@ -1,0 +1,107 @@
+Copyright 2024 Linus Ostermayer, Tom Fix, Maxime Maurer, Marie Oberst, David Paul Mark, Tillmann Rothe Santos, Joris Briegel
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+License Information for Python Libraries used in this software:
+
+Django
+-------------------------------------
+Library Name: Django
+Version: 4.2.7
+Website: https://www.djangoproject.com/start/overview/
+License: BSD-3-Clause license
+
+Chroma DB
+-------------------------------------
+Library Name: chromadb
+Version: 0.4.22
+Website: https://www.trychroma.com/
+License: Apache Software License
+
+Langchain
+-------------------------------------
+Library Name: langchain
+Version: 0.1.1
+Website: https://www.langchain.com/
+License: MIT License (MIT)
+
+Langchain-community
+-------------------------------------
+Library Name: langchain-community
+Version: 0.0.13
+Website: https://www.langchain.com/langchain
+License: MIT License (MIT)
+
+OpenAI
+-------------------------------------
+Library Name: openai
+Version: 1.8.0
+Website: https://openai.com/
+License: MIT License (MIT)
+
+Sentence-transformers
+-------------------------------------
+Library Name: sentence-transformers
+Version: 2.2.2
+Website: https://huggingface.co/sentence-transformers
+License: Apache Software License (Apache License 2.0)
+
+PyPdf
+-------------------------------------
+Library Name: pypdf
+Version: 3.17.4
+Website: https://pypdf2.readthedocs.io/en/3.0.0/
+License: BSD-3-Clause license
+
+Langchain-Openai
+-------------------------------------
+Library Name: langchain_openai
+Version: 0.0.3
+Website: https://python.langchain.com/docs/integrations/llms/openai
+License: MIT License (MIT)
+
+AIolimiter
+-------------------------------------
+Library Name: aiolimiter
+Version: 1.1.0
+Website: https://aiolimiter.readthedocs.io/en/latest/
+License: MIT License (MIT)
+
+AIOHTTP
+-------------------------------------
+Library Name: aiohttp
+Version: 3.9.1
+Website: https://docs.aiohttp.org/en/stable/
+License: Apache Software License (Apache License 2.0)
+
+beautifulsoup4
+-------------------------------------
+Library Name: beautifulsoup4
+Version: 4.12.3
+Website: https://www.crummy.com/software/BeautifulSoup/
+License: MIT License (MIT License)
+
+selenium
+-------------------------------------
+Library Name: selenium
+Version: 4.18.1
+Website: https://www.selenium.dev/
+License: Apache Software License (Apache 2.0)
+
+unstructured
+-------------------------------------
+Library Name: unstructured
+Version: 0.12.5
+Website: https://github.com/Unstructured-IO/unstructured
+License: Apache Software License (Apache 2.0)
+

@@ -1,0 +1,426 @@
+{% extends 'base/standard-site-base.html' %}
+
+{% block description %}Comparision of all citations in "{{ paper.title }}" and their references{% endblock %}
+{% block site_title %}Check of "{{ paper.title }}"{% endblock %}
+{% block additional_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block caption-addition %}
+<a href="{% url 'missing_sources' paper.id %}" style="text-decoration: none;">
+    <button id="missingSourcesLink" type="button">
+        <i class="material-symbols-rounded">upload</i>
+        Missing Sources
+    </button>
+    <div class="info-box-button custom-style">
+        Upload missing sources
+    </div>
+</a>
+{%endblock%}
+
+{% block content %}
+<div class="container-details">
+    <!-- Linker Container mit Datenliste -->
+    <div class="left-container">
+        <div class="col">
+            <ul class ="list-1">
+                {% if paper.title %}
+                <li>
+                    <i class="material-symbols-outlined">book</i>
+                    <span class= "left-container_list-elemente"> {{paper.title}}</span>
+                </li>
+                {% endif %}
+                {% if paper.authors.all  %}
+                <li class="authors_list">
+                        <i class="material-symbols-outlined">Group</i>
+                        <span class= "left-container_list-elemente-liste2">
+                            <ol class ="list-2">
+                                {%for author in paper.authors.all%}
+                                    <li>{{author.name}}</li>
+                                {%endfor%}
+                            </ol>
+                        </span>
+                </li>
+                {% endif %}
+
+                {% if paper.get_full_language_name %}
+                <li>
+                    <i class="material-symbols-outlined">Forum</i>
+                    <span class= "left-container_list-elemente">{{paper.get_full_language_name}}</span>
+                </li>
+                {% endif %}
+
+                {% if paper.origin %}
+                <li>
+                        <i class="material-symbols-outlined">Terminal</i>
+                        <span class= "left-container_list-elemente">{{paper.origin}}</span>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col">
+            <ul class ="list-1">
+                {% if paper.citation_style %}
+                <li>
+                        <i class="material-symbols-outlined">Edit_Note</i>
+                        <span class= "left-container_list-elemente">{{paper.citation_style}}</span>
+
+                </li>
+                {% endif %}
+                <li>
+                    <i class="material-symbols-outlined">Warning</i>
+                    <span class= "left-container_list-elemente">Removed Checks: {{no_false_pos|default:"0"}}</span>
+                </li>
+
+                {% if paper.pub_date %}
+                <li>
+                    <i class="material-symbols-outlined">Calendar_Today</i>
+                    <span class= "left-container_list-elemente">{{paper.pub_date}}</span>
+                </li>
+                {% endif %}
+
+                {% if paper.file_format_display %}
+                <li>
+                    <i class="material-symbols-outlined">Draft</i>
+                    <span class= "left-container_list-elemente">
+                        <p>{{ paper.file_format_display }}</p>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Rechter Container mit Grafiken -->
+    <div class="right-container">
+        <div class="column-details">
+            <div class = "container-metric">
+                <div class="chartContainer" id="chartContainer">
+                    <canvas id="myPieChart"></canvas>
+                </div>
+                <div>
+                    <span class="pie-chart-score">{{score_overall}}%</span>
+                    <div class="pie-chart-text">
+                        <i class="material-symbols-outlined">Hide_Source</i>
+                        <span>Score</span>
+                    </div>
+                </div>
+            </div>
+            <div class="info-box">
+                User's (if available) or LLM-generated average score chart
+            </div>
+        <script>
+            var chartData = {
+                datasets: [{
+                data: [{{score_negative}},{{score_overall}}],
+                backgroundColor: ['LightGray', 'Green'],
+                }]
+            };
+            var ctx = document.getElementById('myPieChart').getContext('2d');
+            var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: chartData,
+            });
+
+        window.addEventListener('resize', function () {
+            location.reload();
+        });
+            </script>
+
+<!-- References per citations -->
+            <div class = "container-metric">
+                <span class="rpc-metric"> {{rpc}} </span>
+                <p>Citations per
+                <br>
+                Reference</p>
+            </div>
+            <div class="info-box">Citation-to-reference ratio</div>
+        </div>
+
+<!-- Informational Diagramm -->
+        <div class="column-details">
+            <div class= "progress-detail">
+                <div class="progress-bar-container">
+                    <p class="progress-detail-headline">Sources</p>
+                    <br>
+                    <p class="progress-text">Overall Imported: <span>{{imp_Sources}}/{{Sources}}</span></p>
+                    <div class="progress" style="width: auto">
+                        <div class="progress-bar3" role="progressbar" style="width: {{imp_sour_Sourc}}% " aria-valuenow="{{imp_sour_Sourc}}" aria-valuemin="0" aria-valuemax="1"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <p class="progress-detail-headline">Checked Citations</p>
+                    <p class="progress-text">Automatically Checked: <span >{{checked}} / {{Cit}}</p>
+                    <div class="progress" style="width: auto">
+                        <div class="progress-bar2" role="progressbar" style="width: {{autochecked}}% " aria-valuenow="{{autochecked}}" aria-valuemin="0" aria-valuemax="1"></div>
+                    </div>
+                    <p class="progress-text">Controlled/manually Checked: <span>{{checkedm}} / {{Cit}}</p>
+                    <div class="progress" style="width: auto">
+                        <div class="progress-bar1" role="progressbar" style="width: {{manuchecked}}% " aria-valuenow="{{manuchecked}}" aria-valuemin="0" aria-valuemax="1"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="check-header">
+    {{ non_false_positive_checks.count }} Citations
+    <div class="check-header-sort" onclick="toggleSortDirection()">
+        Sort by Quality
+        <i class="material-symbols-rounded">unfold_more</i>
+    </div>
+</div>
+
+<div id="check-container">
+    {% for check in paper.checks.all %}
+        {% if check.false_positive is not True %}
+            <div class="check" id="{{check.id}}" data-user-score="{{ check.user_score|default:check.score }}" data-score="{{ check.score }}">
+                <div class="check-column">
+                    <div class="check-title">
+                        Citation
+                    </div>
+                    <div class="check-data">
+                        <div class="check-data-top">
+                            Page: {{ check.page }}
+                        </div>
+                        {% if check.citation.type %}
+                            <div>
+                                Type: {{ check.citation.type }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="citation text-display">
+                    <p class="chunk">
+                        <span class="citation-text">
+                            {{ check.citation.text }}
+                        </span>
+                        <span class="inline-reference">
+                            {{ check.reference.citation_marker }}
+                        </span>
+                    </p>
+                    <div class="citation-text-icons">
+                        <a href="check/{{ check.id }}" class="edit">
+                            <i class="material-symbols-rounded">edit</i>
+                            <div class="info-box-check">Fix citation errors</div>
+                        </a>
+
+                        <a href="check/{{ check.id }}/view">
+                            <i class="material-symbols-rounded">plagiarism</i>
+                            <div class="info-box-check">View original citation</div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="check-column">
+                    <div class="check-title">
+                            Quality
+                    </div>
+                    <div class="check-data">
+                        <div class="check-data-top">
+                            {% if check.user_score is not None and check.user_score != check.score %}
+                                <div>
+                                    set by user
+                                </div>
+                            {% else %}
+                                <div>
+                                    predicted
+                                </div>
+                            {% endif %}
+                            <div class="score-container">
+                                <div class="score-box" id="score-box-{{ check.id }}" data-score="{{ check.score }}" contenteditable="true" onBlur="updateScore({{ check.id }}, this.textContent)">
+                                    {% if check.user_score is not None %}
+                                        {{ check.user_score }} %
+                                    {% else %}
+                                        {{ check.score }} %
+                                    {% endif %}
+                                </div>
+                                <button id="score-confirm-{{ check.id }}" class="score-confirm-button {% if check.user_score is not None %}green{% endif %}" onClick="toggleScoreConfirmation({{ check.id }})">
+                                    <span class="material-symbols-outlined">check_circle</span>
+                                </button>
+                                {% if check.user_score is not None and check.user_score != check.score%}
+                                    <div class="info-box-button">Click to reset to predicted score</div>
+                                {% elif check.user_score is not None and check.user_score == check.score%}
+                                    <div class="info-box-button">Click to unconfirm predicted score</div>
+                                {%else%}
+                                    <div class="info-box-button">Click to confirm predicted score</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="check-data-bottom">
+                            <strong>
+                                Semantic Difference:
+                            </strong>
+                            {{ check.semantic_difference }}
+                        </div>
+                    </div>
+                </div>
+
+                {% if check.reference.source in missing_sources %}
+                    <div class="source-upload-button-check-container">
+                        <button class="source-upload-button-check" id="SourceUploadButton{{ check.reference.source.id }}">
+                            <i class="material-symbols-outlined">upload</i>
+                            Upload
+                        </button>
+                    </div>
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'update_paper' check.reference.source.id %}?redirect_to=paper">
+                        {% csrf_token %}
+                        <input type="hidden" name="source_id" value="{{ check.reference.source.id }}">
+                        <input id="fileInput{{ check.reference.source.id }}" type="file" name="file" style="display:none" required>
+                        <button id="submitButton" type="submit" style="display:none"></button>
+                    </form>
+                {% else %}
+                    <div class="reference text-display">
+                        <p class="chunk">
+                            <span class="referenced-text">
+                                {{ check.reference.extraction }}
+                            </span>
+                        </p>
+                    </div>
+                {% endif %}
+                <script>
+                    document.getElementById('SourceUploadButton{{ check.reference.source.id }}').addEventListener('click', function () {
+                        document.getElementById('fileInput{{ check.reference.source.id }}').click();
+                    });
+
+                    document.getElementById('fileInput{{ check.reference.source.id }}').addEventListener('change', function () {
+                        document.getElementById("submitButton").click();
+                    });
+                </script>
+
+                <div class="check-column">
+                    <div class="check-title">
+                            Source
+                        </div>
+                    <div class="check-data">
+                        {% if check.reference.source %}
+                            <div class="check-data-top">
+                                {% if check.reference.source.paper.type %}
+                                <div>
+                                    {{ check.reference.source.paper.type }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                "{{ check.reference.source.paper.title }}"
+                            </div>
+                            <br>
+                            <div>
+                                {{ check.reference.source.paper.authors.all|slice:":4"|join:", " }}{% if check.reference.source.paper.authors|length > 4 %}, ...{% endif %}
+                            </div>
+                            {% if check.reference.source.paper.pub_year %}
+                                <div>
+                                    ({{ check.reference.source.paper.pub_year }})
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <a href="#" class="delete" onclick="deleteCheck({{ check.id }})">
+                    <i class="material-symbols-rounded delete-check">delete</i>
+                </a>
+
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<script>
+    var ascending = false;
+    function toggleSortDirection() {
+        var sortIcon = document.querySelector('.check-header-sort i');
+        var checks = Array.from(document.querySelectorAll('.check'));
+
+        ascending = !ascending;
+
+        sortIcon.textContent = ascending ? 'arrow_drop_down' : 'arrow_drop_up';
+
+        checks.sort(function(a, b) {
+            var aValue = parseFloat(a.dataset.userScore) || parseFloat(a.dataset.score) || 0;
+            var bValue = parseFloat(b.dataset.userScore) || parseFloat(b.dataset.score) || 0;
+            return ascending ? aValue - bValue : bValue - aValue;
+        });
+
+        var checksContainer = document.getElementById('check-container');
+
+        checksContainer.innerHTML = '';
+
+        checks.forEach(function(check) {
+            checksContainer.appendChild(check);
+        });
+    }
+
+    function updateScore(checkId, newScore) {
+        newScore = newScore.replace('%', '');
+        fetch(`set_score/${checkId}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                'score': newScore
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text) });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                location.reload();
+            }
+        })
+    }
+    function toggleScoreConfirmation(checkId) {
+        var scoreBox = document.getElementById('score-box-' + checkId);
+        var confirmButton = document.getElementById('score-confirm-' + checkId);
+
+        if (confirmButton.classList.contains('green')) {
+            confirmButton.innerHTML = '<span class="material-symbols-outlined">check_circle</span>';
+            confirmButton.classList.remove('green');
+            scoreBox.textContent = scoreBox.dataset.score + ' %';
+            updateScore(checkId, 'null');
+        } else {
+        var currentScore = scoreBox.textContent.replace('%', '');
+        updateScore(checkId, currentScore);
+        confirmButton.innerHTML = '<span class="material-symbols-outlined" style="color:green;">check_circle</span>';
+        confirmButton.classList.add('green');
+        }
+    }
+    function deleteCheck(checkId) {
+        fetch(`set_false_positive/${checkId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to set false positive');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                console.error('Failed to set false positive: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Failed to set false positive: ' + error.message);
+        });
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block body %}
+{% include 'base/text-logo.html' %}
+{% block content %}
+<div class="lp-header">
+    <h1 class="lp-header-text">Welcome to <span class="thin-underline">RefCheck</span></h1>
+    <hr class="dash dark-color">
+    <p class="lp-header-subtext"> Get Started by Logging In </p>
+</div>
+<div class="lp-content">
+    <div class="lp-content-container">
+        <div class="lp-content-boxes">
+            <div class ="lp-box">
+                <div>
+                    <p class="lp-box-text">
+                        Already have an account?
+                    </p>
+                    <a href="{% url 'login' %}" class="lp-link">
+                        <button id="login_button" type="button" class="dark-button">
+                            <i class="material-symbols-rounded">Login</i>
+                            Login here!
+                        </button>
+                    </a>
+                </div>
+                <div>
+                    <p class="lp-box-text">
+                        Not registered yet?
+                    </p>
+                    <a href="{% url 'sign_up' %}" style="text-decoration: none;">
+                        <button id="signUp_button" type="button" class="dark-button">
+                            <i class="material-symbols-rounded">Stylus_Note</i>
+                            Sign up here!
+                        </button>
+                    </a>
+                </div>
+            </div>
+            <div class="lp-box">
+                <div>
+                    <div class="lp-box-text">
+                        Wondering what RefCheck is?
+                        <br>
+                        <p class="lp-box-subtext"> Get more information about us and our project</p>
+                    </div>
+                    <a href="{% url 'info' %}" style="text-decoration: none;">
+                        <button id="Info_button" type="button" class="dark-button">
+                            <i class="material-symbols-rounded">Info</i>
+                            About us
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <img src="{% static "images/lp_background-removebg.png" %}" class="lp-image">
+    </div>
+</div>
+
+
+
+{% endblock %}
+{% endblock %}

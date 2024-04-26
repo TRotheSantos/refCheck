@@ -1,0 +1,93 @@
+{% extends 'base/standard-site-base.html' %}
+
+{% block caption-addition %}
+<a href="{% url 'paper' paper.id %}" style="text-decoration: none;">
+    <button id="checksLink" type="button">
+        <i class="material-symbols-rounded">checklist</i>
+        Checks
+    </button>
+    <div class="info-box-button custom-style">
+        View Check Results
+    </div>
+</a>
+{%endblock%}
+
+{% block content %}
+<div class="missing-sources-container">
+    {% for source in missing_sources %}
+        <div class="missing-source">
+            <div class="source-title">
+                <h4> "{{ source.paper.title }}" </h4>
+                <button class="copy-button" onclick="copyToClipboard('{{ source.bibliography_entry }}','{{ source.id }}')">
+                    <i class="material-symbols-outlined" id="copyIcon{{ source.id }}">content_copy</i>
+                </button>
+                <div class="info-box" id="infoBox">Copy</div>
+            </div>
+            <div class="number-references"> {{ source.num_references }}x referenced</div>
+            <div class="source-data">
+                <p>{{ source.paper.authors.all|slice:":5"|join:", " }}{% if source.paper.authors|length > 5 %}, ...{% endif %} </p>
+                <br>
+                {% if source.paper.pub_date %}
+                    <p>({{ source.paper.pub_date }}) </p>
+                    <br>
+                {% endif %}
+                {% if source.paper.origin %}
+                    <strong>Origin: </strong><a href="{{ source.paper.origin }}" target="_blank"> {{ source.paper.origin }} </a>
+                {% endif %}
+                <ul>
+                {% with attributes=source.paper.relevant_reference_attributes %}
+                    {% for key, value in attributes.links.items %}
+                        <li>
+                            <strong>{{ key|capfirst }}:</strong> <a href="{{ value }}">{{ value }}</a>
+                        </li>
+                    {% endfor %}
+                    {% for key, value in attributes.other.items %}
+                        <li>
+                            <strong>{{ key|capfirst }}:</strong> {{ value }}
+                        </li>
+                    {% endfor %}
+                {% endwith %}
+                </ul>
+            </div>
+            <button class="source-upload-button" id="SourceUploadButton{{ source.id }}">
+                <i class="material-symbols-outlined">upload</i>
+                Upload
+            </button>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'update_paper' source.id %}?redirect_to=missing_sources">
+                {% csrf_token %}
+                <input type="hidden" name="source_id" value="{{ source.id }}">
+                <input id="fileInput{{ source.id }}" type="file" name="file" style="display:none" required>
+                <button id="submitButton" type="submit" style="display:none"></button>
+            </form>
+        </div>
+    <script>
+        document.getElementById('SourceUploadButton{{ source.id }}').addEventListener('click', function () {
+            document.getElementById('fileInput{{ source.id }}').click();
+        });
+
+        document.getElementById('fileInput{{ source.id }}').addEventListener('change', function () {
+            document.getElementById("submitButton").click();
+        });
+
+        function copyToClipboard(bibliographyEntry,sourceId) {
+            var textToCopy = bibliographyEntry;
+            var textarea = document.createElement("textarea");
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+
+            var copyIcon = document.getElementById('copyIcon' + sourceId);
+
+            copyIcon.innerHTML = 'done_all';
+
+            setTimeout(function() {
+                copyIcon.innerHTML = 'content_copy';
+            }, 1000);
+        }
+    </script>
+    {% endfor %}
+</div>
+{% endblock %}

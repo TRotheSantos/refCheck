@@ -1,0 +1,35 @@
+{% extends 'base/standard-site-base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container-info-1">
+    <div class="info-text-container">
+        <span class="info-headline">Our Motivation</span>
+        <p class="info-text">
+            In light of the growing complexity in verifying academic citations, we were driven to explore innovative solutions leveraging Large Language Models.
+            Our aim is to streamline the process for researchers and academics, enhancing the accuracy and efficiency of reference validation.
+        </p>
+    </div>
+    <img src="{% static 'images/info-image-1.png' %}" alt="Illustration of a person working on a paper" class="info-picture">
+</div>
+<div class="container-info-2">
+    <img src="{% static 'images/info-image-2.png' %}" alt="Illustration of a person working on a paper" class="info-picture">
+    <div class="info-text-container">
+        <span class="info-headline">Background Story</span>
+        <p class="info-text">
+            The project is integrated into the
+            <a href="https://www.kit.edu" target="_blank">KIT</a>
+            project curriculum, providing students in the field of Business Informatics with hands-on experience and teamwork opportunities.
+            Within this framework, specific groups of students are tasked with completing the project within an academic semester.</p>
+    </div>
+</div>
+<div class="container-info-1">
+    <div class="info-text-container">
+        <span class="info-headline">About Us</span>
+        <p class="info-text">
+            Comprised of 7 students enrolled in the Business Informatics program, we are united by our passion for technology and innovation.
+            With the winter semester of 2023/24 marking our collaborative endeavor in software development, we are eager to apply our skills and knowledge to address real-world challenges in academia</p>
+    </div>
+    <img src="{% static 'images/info-image-3.png' %}" alt="Illustration of a person working on a paper" class="info-picture">
+</div>
+{% endblock %}
