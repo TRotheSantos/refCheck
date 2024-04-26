@@ -1,4 +1,4 @@
-Copyright 2024 Linus Ostermayer, Tom Fix, Maxime Maurer, Marie Oberst, David Paul Mark, Joris Briegel, Tilmann Rothe Santos
+Copyright 2024 Linus Ostermayer, Tilmann Rothe Santos, Tom Fix, Maxime Maurer, Marie Oberst, David Paul Mark, Joris Briegel
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
