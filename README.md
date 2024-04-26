@@ -8,6 +8,8 @@
 ![grafik](https://github.com/TRotheSantos/refCheck/assets/124930266/cbb4cfb6-c33a-405f-8075-c495fb8181f9)
 
 
+
+# Getting started
 You can get started for development either by using the Docker configuration or running a local server using Python virtual environments. We assume Linux or macOS for the commands. If you use Windows, do yourself a favor and use the official Windows subsystem for linux to get a proper commandline, it will save you from headache. Anyways running the local server should work on Windows or through an IDE terminal too.
 
 > **WARNING:**<br>
