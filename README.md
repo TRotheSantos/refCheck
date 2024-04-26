@@ -100,7 +100,7 @@ You will need to configure an `OPENAI_API_KEY`. Also you will need to configure 
 
 
 # License
- Copyright 2024 Linus Ostermayer, Tom Fix, Maxime Maurer, Marie Oberst, David Paul Mark, Tillmann Rothe Santos, Joris Briegel
+ Copyright 2024 Linus Ostermayer, Tilmann Rothe Santos, Tom Fix, Maxime Maurer, Marie Oberst, David Paul Mark, Joris Briegel
  
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
